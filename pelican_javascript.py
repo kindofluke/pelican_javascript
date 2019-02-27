@@ -40,10 +40,11 @@ def add_files(gen, metadata):
     """
     site_url = gen.settings['SITEURL']
     formatters = {'stylesheets': '<link rel="stylesheet" href="{0}" type="text/css" />',
-                  'javascripts': '<script src="{0}"></script>'}
+                  'javascripts': '<script src="{0}"></script>',
+                  'top_javascripts': '<script src="{0}"></script>'}
     dirnames = {'stylesheets': 'css',
                 'javascripts': 'js'}
-    for key in ['stylesheets', 'javascripts']:
+    for key in ['stylesheets', 'javascripts', 'top_javascripts']:
         if key in metadata:
             files = metadata[key].replace(" ", "").split(",")
             htmls = []
@@ -51,6 +52,8 @@ def add_files(gen, metadata):
                 if f.startswith('http://') or f.startswith('https://'):
                     link = f
                 else:
+                    if key != 'top_javascripts':
+                        raise TypeError("Why you trying to put non http at the top?")
                     if gen.settings['RELATIVE_URLS']:
                         link = "%s/%s" % (dirnames[key], f)
                     else:
